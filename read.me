@@ -1,4 +1,55 @@
 
-
+see
 https://medium.com/@ToddZebert/a-walk-through-of-a-simple-javascript-mvc-implementation-c188a69138dc
+
+
+A Walk-through of a Simple JavaScript MVC Implementation
+Go to the profile of Todd Zebert
+Todd Zebert
+Jan 23, 2017
+I’ve used versions of this in the past when the use case was appropriate, and loading a full featured library/framework would be overkill.
+
+Despite being written in ES6 (well, mostly), I’ve broken this out using the Module Pattern to make it easier to walk thought, and because the pattern doesn’t require any tooling, just some concatenation to run in the browser. If you’d like to know more about that pattern, I have a slide deck on the Module Pattern and related concepts.
+
+Hopefully this will demystify the the “magic” of the MVC Pattern. The first module we’ll look at is the Event module.
+
+The Event Module
+This implements a simple Observer Pattern, although it does not strictly adhere to, or complete, the pattern. This event code should be private within simpleMVC, but because of my use of the Module Pattern and breaking it all into separate chunks, it can’t be, so I’ve called it _Event to denote that it’s private (as I have with various private properties)
+
+The constructor (here just the function definition) defines some basic properties.
+
+Event has two methods:
+
+attach(listener) which simply adds an observer to the list of observers
+notify(args) which allows the subject to notify its observers
+
+/**
+ * Event Listeners and notifications module
+ */
+var simpleMVC = (function simpleMVC(simple) {
+  'use strict';
+
+  // sender is the context of the Model or View which originates the event
+  simple._Event = function SimpleEvent(sender) {
+    this._sender = sender;
+    this._listeners = [];
+  };
+
+  simple._Event.prototype = {
+    // add listener closures to the list
+    attach(listener) {
+      this._listeners.push(listener);
+    },
+    // loop through, calling attached listeners
+    notify(args) { this._listeners.forEach(
+      (v, i) => this._listeners[i](this._sender, args)
+      )
+    },
+  };
+
+  return simple;
+})(simpleMVC || {});
+
+
+
 
